@@ -176,7 +176,7 @@ setuptools.setup(
         "Topic :: Software Development :: Quality Assurance",
     ],
     install_requires=list(get_requirements()),
-    ext_modules=[module_logger],
+    ext_modules= [module_logger] if sys.platform == "linux" else [],
     cmdclass={
         'sdist': Sdist,
         'install': Install,

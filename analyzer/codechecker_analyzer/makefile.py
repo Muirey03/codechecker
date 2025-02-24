@@ -127,12 +127,14 @@ class MakeFileCreator:
         # Get command to generate PCH file.
         cmd, ast_dir = generate_ast_cmd(action, self.__config,
                                         triple_arch, action.source)
+        cmd = map(shlex.quote, cmd)
         cmds.append(f'mkdir -p {ast_dir}')
         cmds.append(' '.join(cmd))
 
         # Get command to create CTU index file.
         cmd = get_extdef_mapping_cmd(action, self.__config,
                                      action.source, self.__func_map_cmd)
+        cmd = map(shlex.quote, cmd)
 
         fnmap_tmp_dir = os.path.join(self.__ctu_dir, triple_arch,
                                      self.__ctu_temp_fnmap_folder)

@@ -259,19 +259,24 @@ INCLUDE_OPTIONS_MERGED = [
     '-iwithprefixbefore'
 ]
 
-XCLANG_FLAGS_TO_SKIP = ['-module-file-info',
-                        '-S',
-                        '-emit-llvm',
-                        '-emit-llvm-bc',
-                        '-emit-llvm-only',
-                        '-emit-llvm-uselists',
-                        '-rewrite-objc']
+XCLANG_FLAGS_TO_SKIP = ['-module-file-info$',
+                        '-S$',
+                        '-emit-llvm$',
+                        '-emit-llvm-bc$',
+                        '-emit-llvm-only$',
+                        '-emit-llvm-uselists$',
+                        '-rewrite-objc$',
+                        '-clang-vendor-feature',
+                        '-fno-odr-hash-protocols$']
 
 COMPILE_OPTIONS_MERGED = \
     re.compile('(' + '|'.join(COMPILE_OPTIONS_MERGED) + ')')
 
 INCLUDE_OPTIONS_MERGED = \
     re.compile('(' + '|'.join(INCLUDE_OPTIONS_MERGED) + ')')
+
+XCLANG_FLAGS_TO_SKIP = \
+    re.compile('(' + '|'.join(XCLANG_FLAGS_TO_SKIP) + ')')
 
 
 PRECOMPILATION_OPTION = re.compile('-(E|M[G|T|Q|F|J|P|V|M]*)$')
@@ -707,7 +712,8 @@ def __collect_transform_xclang_opts(flag_iterator, details):
     if flag_iterator.item == "-Xclang":
         next(flag_iterator)
         next_flag = flag_iterator.item
-        if next_flag in XCLANG_FLAGS_TO_SKIP:
+        m = XCLANG_FLAGS_TO_SKIP.match(next_flag)
+        if m:
             return True
 
         details['analyzer_options'].extend(["-Xclang", next_flag])
